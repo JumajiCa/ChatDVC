@@ -10,7 +10,7 @@ from util import error_handling as er
 # Really Sketchy Flask code
 app = Flask(__name__)
 
-@app.route("") 
+@app.route("/") 
 def hello(): 
     return "<h1>Hello World!</h1>"
 
