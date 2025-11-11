@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM python:3.14-slim-bullseye
+FROM python:3.14-alpine
 
 # Set the working directory in the container
 WORKDIR /app
@@ -22,6 +22,6 @@ ENV FLASK_RUN_HOST=0.0.0.0
 
 # Run the Flask application using Gunicorn for production or Flask's built-in server for development
 # For production, consider using Gunicorn:
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]
+# CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]
 # For development, you might use:
-# CMD ["flask", "run"]
+CMD ["flask", "run"]
