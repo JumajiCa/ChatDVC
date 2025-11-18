@@ -1,30 +1,45 @@
 
 import os
 from dotenv import load_dotenv
-from numpy import random as npr
 from openai import OpenAI
-from flask import Flask 
+from flask import Flask, jsonify, request
+from flask_cors import CORS
 
 from util import error_handling as er
+# from app import app
 
-# Really Sketchy Flask code
 app = Flask(__name__)
 
-@app.route("/") 
-def hello(): 
-    return "<h1>Hello World!</h1>"
-
-@app.route("/rand") 
-def basic_rand(): 
-    random_num_lst  = npr.rand(30)
-    text = ""
-    for num in random_num_lst: 
-        text += f"<h1>{str(num)}</h1>"
-    return text
-
+# Load Environment Variables 
 load_dotenv()
+
+# Load API Key 
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
 BASE_URL = os.getenv("BASE_URL")
+
+# Set Up CORS to allow requests from Svelte, thereby creating the interface to connect
+# both applications together.
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
+
+@app.route("/")
+def home():
+    return jsonify({"message": "Flask server is running!"})
+
+@app.route("/api/ask", methods=['POST'])
+def handle_ask():
+    # Get questions from Svelte Frontend. 
+    data = request.get_json()
+    question = data.get('question')
+
+    # ----
+    # TODO: Put the Deepseek Code here.
+    # ----
+
+    # For now, just send a simple response back
+    print(f"Received question: {question}")
+    response_text = f"The LLM's answer to '{question}' will go here."
+
+    return jsonify({"answer": response_text})
 
 def main():
     if DEEPSEEK_API_KEY == "": 
@@ -45,4 +60,4 @@ def main():
     return 0
 
 if __name__ == "__main__": 
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
