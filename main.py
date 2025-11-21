@@ -44,7 +44,7 @@ def handle_ask():
 def main():
     if DEEPSEEK_API_KEY == "": 
         er.print_error(error_text="Error: 'DEEPSEEK_API_KEY' not loaded or not set in the environment.\nPerhaps check your '.env' file?")
-        return # Exit Program Pre-maturely
+        return None
 
     client = OpenAI(api_key=DEEPSEEK_API_KEY, base_url="https://api.deepseek.com")
     response = client.chat.completions.create(
