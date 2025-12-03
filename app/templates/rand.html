@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+    <head>
+        {% if title %}
+        <title>{{ title }}</title>
+        {% else %}
+        <title> ChatDVC -- Random Number Generator (!!) </title>
+        {% endif %}
+    </head>
+    <body>
+        {% for num in num_lst %}
+        <div><p><b>{{ num }}</b></p></div>
+        {% endfor %}
+    </body>
+</html>

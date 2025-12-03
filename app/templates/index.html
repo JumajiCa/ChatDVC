@@ -1,0 +1,15 @@
+
+<!doctype html>
+<html>
+    <head>
+        {% if title %}
+        <title>{{ title }}</title>
+        {% else %}
+        <title> ChatDVC!! </title>
+        {% endif %}
+    </head>
+    <body>
+        <h1>Hello, {{ user.username }}!</h1>
+        <div><a href="/rand" target="_blank"> Random Number Generator! </a></div>
+    </body>
+</html>
