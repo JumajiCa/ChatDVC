@@ -6,7 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
-import helpers as h
+import util_funcs as util
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -62,7 +62,7 @@ successful = driver.find_element(By.CLASS_NAME, "successdiv")
 print(successful.text)
 
 mfa_code = driver.find_element(By.ID, "OTPOTPEntry")
-mfa_code.send_keys(h.get_email_code())
+mfa_code.send_keys(util.get_email_code())
 
 time.sleep(2)
 
@@ -72,7 +72,16 @@ real_login_button.click()
 registration_date = driver.find_element(By.ID, "regDate")
 
 time.sleep(2)
-
 print(registration_date.text)
+# This would be an example of how you would return the data so that the LLM can read it 
+# return jsonify({"registration_date": registration_date.text})
 
 driver.quit()
+
+def get_schedule():
+    for student_class in html_table: 
+        pass
+    pass
+
+def get_registration():
+    pass
