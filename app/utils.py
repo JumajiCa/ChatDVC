@@ -1,4 +1,3 @@
-
 import os
 from cryptography.fernet import Fernet
 from dotenv import load_dotenv
@@ -22,8 +21,6 @@ class Color:
     UNDERLINE = '\033[4m'
 
 class error_handling: 
-    # def __init__(self): 
-    #    self.error_buffer = []
     @staticmethod
     def print_error(error_text: str): 
         print(f"{Color.RED}{error_text}{Color.RESET}\n")
@@ -66,3 +63,4 @@ class EncryptionManager:
         except Exception as e:
             error_handling.print_error(f"Decryption failed: {e}")
             return ""
+

@@ -20,7 +20,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy Backend Code
 COPY app/ ./app/
-COPY util.py .
 COPY main.py .
 
 # Copy Frontend Build

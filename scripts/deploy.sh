@@ -1,7 +1,11 @@
 #!/bin/bash
+set -e
 
 # ChatDVC Deployment Script
-# Usage: ./deploy.sh [TARGET_IP]
+# Usage: ./scripts/deploy.sh [TARGET_IP]
+
+# Navigate to project root
+cd "$(dirname "$0")/.."
 
 TARGET_IP=${1:-"206.189.77.227"}
 USER="root"
@@ -44,14 +48,14 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# 2. Install Docker on Remote (if missing)
-echo "📦 Checking Docker on remote server..."
-ssh $USER@$TARGET_IP "command -v docker >/dev/null 2>&1 || { echo 'Installing Docker...'; curl -fsSL https://get.docker.com | sh; }"
+# 2. Install Docker and rsync on Remote (if missing)
+echo "📦 Checking Docker and rsync on remote server..."
+ssh $USER@$TARGET_IP "apt-get update && apt-get install -y rsync; command -v docker >/dev/null 2>&1 || { echo 'Installing Docker...'; curl -fsSL https://get.docker.com | sh; }"
 
 # 3. Copy Files to Remote
-echo "wu Copying project files..."
+echo "📂 Copying project files..."
 # Exclude venv, node_modules, git, etc.
-rsync -avz --exclude-from='.dockerignore' --exclude '.git' ./ $USER@$TARGET_IP:$REMOTE_DIR
+rsync -avz --delete --exclude-from='.dockerignore' --exclude '.git' ./ $USER@$TARGET_IP:$REMOTE_DIR
 
 # 4. Build and Run on Remote
 echo "🔨 Building and Running Docker Container..."
@@ -62,8 +66,8 @@ ssh $USER@$TARGET_IP << EOF
     docker stop chatdvc_container 2>/dev/null || true
     docker rm chatdvc_container 2>/dev/null || true
     
-    # Build Image
-    docker build -t chatdvc:latest .
+    # Build Image (Force no-cache to ensure requirements are fresh)
+    docker build --no-cache -t chatdvc:latest .
     
     # Run Container
     # Persist data in ./data volume
@@ -78,5 +82,6 @@ ssh $USER@$TARGET_IP << EOF
 
     echo "✅ Deployment Complete!"
     docker ps | grep chatdvc
+    echo "Check logs with: docker logs chatdvc_container"
 EOF
 
