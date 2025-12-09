@@ -7,11 +7,17 @@ COPY client/ ./
 RUN npm run build
 
 # Stage 2: Final Image
-FROM python:3.11-slim
+FROM python:3.11-slim-bookworm
 WORKDIR /app
 
 # Install Nginx and Supervisor
-RUN apt-get update && apt-get install -y nginx supervisor && \
+RUN rm -rf /var/lib/apt/lists/* && \
+    apt-get update && \
+    apt-get install -y \
+    -o Acquire::http::Pipeline-Depth=0 \
+    -o Acquire::http::No-Cache=True \
+    -o Acquire::BrokenProxy=true \
+    nginx supervisor && \
     rm -rf /var/lib/apt/lists/*
 
 # Install Python Dependencies

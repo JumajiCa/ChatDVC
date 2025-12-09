@@ -18,7 +18,7 @@ TEST_ENC_KEY=$(python3 -c "from cryptography.fernet import Fernet; print(Fernet.
 # We pass a dummy key if env var is missing, just to let it start up without crashing on os.getenv
 docker run -d \
   -p 8080:80 \
-  -e DEEPSEEK_API_KEY="${DEEPSEEK_API_KEY:-dummy_key_for_local_test}" \
+  -e DEEPSEEK_API_KEY="sk-883ae6d16d164b79a478704763a3afd4" \
   -e ENCRYPTION_KEY="${TEST_ENC_KEY}" \
   --name chatdvc_local \
   chatdvc:local
