@@ -1,4 +1,5 @@
 from .database import db
+from functions import schedule
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -9,6 +10,8 @@ class User(db.Model):
     discipline = db.Column(db.String(100))
     expected_grad_date = db.Column(db.String(50))
     counselor = db.Column(db.String(100))
+    registration_date = db.Column(db.String(100))
+    schedule = db.Column(db.String(100))
 
     def to_dict(self):
         return {
@@ -19,6 +22,8 @@ class User(db.Model):
             'major': self.major,
             'discipline': self.discipline,
             'expected_grad_date': self.expected_grad_date,
-            'counselor': self.counselor
+            'counselor': self.counselor, 
+            'registration+_date': self.registration_date, 
+            'schedule': self.schedule
         }
 

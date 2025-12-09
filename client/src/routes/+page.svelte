@@ -181,7 +181,7 @@
             </div>
         </div>
     {:else}
-        <div class="chat-window">
+<div class="chat-window">
             {#each messages as msg}
                 <div class="message {msg.role}">
                     <strong>{msg.role === 'user' ? 'You' : 'DVC Bot'}:</strong>

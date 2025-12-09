@@ -4,6 +4,7 @@ import os
 
 from app.models import User, db
 from app.utils import error_handling as er, EncryptionManager
+from functions import get_schedule, get_reg_date
 
 # Define Blueprint
 main_bp = Blueprint('main', __name__)
@@ -59,6 +60,13 @@ def handle_user():
                 user.insite_password = encryption_manager.encrypt(data['insite_password'])
             else:
                 pass 
+
+        if 'registration_date' not in data: 
+            user.registration_date = get_reg_date
+
+        if 'schedule' not in data: 
+            user.registration_date = get_schedule
+
         
         db.session.commit()
         return jsonify({"message": "Profile saved successfully", "user": user.to_dict()})
