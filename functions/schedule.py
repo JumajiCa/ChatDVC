@@ -140,9 +140,7 @@ def get_schedule():
         }
         cleaned_courses.append(cleaned)
 
-    print(cleaned_courses)
-
     driver.quit()
-    # return jsonify(cleaned_courses)
+    return cleaned_courses
 
-get_schedule()
+

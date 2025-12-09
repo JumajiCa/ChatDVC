@@ -6,11 +6,32 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
+import json
 import util_funcs as util
+from flask import jsonify
 from dotenv import load_dotenv
-def get_reg_date():
-    load_dotenv()
 
+def get_reg_date():
+
+    """
+    Retrieves the priority registration date/time for the Spring 2026 ('2026SP') term 
+    by scraping the Contra Costa Community College District portal.
+
+    This tool automates a full browser session using Selenium. It handles the 
+    login process and automatically resolves the Email Multi-Factor Authentication (MFA) 
+    challenge.
+
+    IMPORTANT:
+    - This tool ONLY retrieves data for the '2026SP' semester.
+    - This is a slow operation (takes 10-20 seconds) as it launches a real browser.
+    - Requires 'USERNAME' and 'PASSWORD' environment variables to be set.
+
+    Returns:
+        str: A JSON-formatted string containing the registration date.
+             Example: '{"registration_date": "Nov 20, 2025 08:00 AM"}'
+    """
+
+    load_dotenv()
     name = os.getenv("USERNAME")
     pw = os.getenv("PASSWORD")
 
@@ -48,19 +69,6 @@ def get_reg_date():
     heading = driver.find_element(By.ID, "lblOTPEntryTitle")
     print(heading.text)
 
-    # mfa = driver.find_element(By.XPATH, "//a[@href='javascript:displayOTPResendPopup()']")
-    # mfa.click()
-    #
-    # time.sleep(2)
-    #
-    # send_email = driver.find_element(By.XPATH, "//a[@href=\"javascript:resendOTP('OTPEntryForm', 'submitOTPEntry()', 3, 0)\"]")
-    # send_email.click()
-    #
-    # time.sleep(2)
-    #
-    # successful = driver.find_element(By.CLASS_NAME, "successdiv")
-    # print(successful.text)
-
     mfa_code = driver.find_element(By.ID, "OTPOTPEntry")
     mfa_code.send_keys(util.get_email_code())
 
@@ -77,9 +85,9 @@ def get_reg_date():
     ).text
 
     time.sleep(1)
-
     driver.quit()
-    print(registration_date)
-    # return jsonify({"registration_date": registration_date})
 
-get_reg_date()
+    # print(registration_date)
+    return json.dumps({"registration_date": registration_date})
+
+print(get_reg_date())
