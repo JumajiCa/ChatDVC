@@ -96,53 +96,46 @@ def get_schedule():
         )
     )
 
-    course_tables = driver.find_elements(By.CSS_SELECTOR, "table.course-details-grid")
+    courses_table = driver.find_element(By.ID, "ctl00_PlaceHolderMain_dgCourses")
+    rows = courses_table.find_elements(By.XPATH, "./tbody/tr")
 
-    all_courses = []
+    courses = []
 
-    for course in course_tables:
-        course_info = {}
+    def clean(t):
+        return " ".join(t.replace("\n", " ").split())
 
-        # ----- Title -----
-        title_el = course.find_element(By.XPATH, ".//preceding-sibling::div[1]")
-        course_info["title"] = title_el.text.strip()
+    for row in rows:
+        td = row.find_element(By.TAG_NAME, "td")
 
-        # ----- Date Range -----
-        date_el = course.find_element(By.XPATH, ".//tbody/tr[1]/td")
-        course_info["date_range"] = date_el.text.strip()
+        # Title — bold span
+        title = td.find_element(
+            By.CSS_SELECTOR, "span[id*='_lblCourse']"
+        ).text
 
-        # ----- Rooms -----
-        room_cells = course.find_elements(
-            By.XPATH, ".//td[contains(., 'Bldg/Room')]"
-        )
-        rooms = []
-        for r in room_cells:
-            rooms.append(r.text.replace("Bldg/Room:", "").strip())
-        course_info["rooms"] = rooms
+        # Date range — italic span
+        date_range = td.find_element(
+            By.CSS_SELECTOR, "span[id*='_lblDates']"
+        ).text
 
-        # ----- Instructors -----
-        # instructors are inside <td> tags under the room block
-        instructor_cells = course.find_elements(
-            By.XPATH, ".//tr/td[not(contains(., 'Bldg/Room')) and string-length(normalize-space()) > 0]"
-        )
-        instructors = [x.text.strip() for x in instructor_cells]
-        course_info["instructors"] = instructors
+        # All "Bldg/Room" sections
+        locations = td.find_elements(By.CSS_SELECTOR, "span[id*='_lblLocation']")
+        location_labels = [loc.text for loc in locations]
 
-        all_courses.append(course_info)
+        # Instructor tables under each location
+        instructor_tables = td.find_elements(By.CSS_SELECTOR, "table.grid-faculty-names")
+        instructor_lists = []
+        for table in instructor_tables:
+            names = [clean(td.text) for td in table.find_elements(By.TAG_NAME, "td")]
+            instructor_lists.append(names)
 
-    cleaned_courses = []
-    for c in all_courses:
-        cleaned = {
-            "title": util.clean(c["title"]),
-            "date_range": util.clean(c["date_range"]),
-            "rooms": [util.clean(r) for r in c["rooms"]],
-            "instructors": [util.clean(i) for i in c["instructors"]],
-        }
-        cleaned_courses.append(cleaned)
+        courses.append({
+            "title": clean(title),
+            "date_range": clean(date_range),
+            "rooms": location_labels,
+            "instructors": instructor_lists
+        })
 
-    print(cleaned_courses)
+    print(courses)
 
     driver.quit()
-    # return jsonify(cleaned_courses)
-
-get_schedule()
+    # return jsonify(courses)
