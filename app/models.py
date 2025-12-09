@@ -1,5 +1,5 @@
 from .database import db
-from functions import schedule
+# from functions import schedule
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -22,8 +22,8 @@ class User(db.Model):
             'major': self.major,
             'discipline': self.discipline,
             'expected_grad_date': self.expected_grad_date,
-            'counselor': self.counselor, 
-            'registration+_date': self.registration_date, 
-            'schedule': self.schedule
+            'counselor': self.counselor
+            #'registration+_date': self.registration_date,
+            #'schedule': self.schedule
         }
 

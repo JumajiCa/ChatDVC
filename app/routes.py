@@ -4,7 +4,7 @@ import os
 
 from app.models import User, db
 from app.utils import error_handling as er, EncryptionManager
-from functions import get_schedule, get_reg_date
+# from functions import get_schedule, get_reg_date
 
 # Define Blueprint
 main_bp = Blueprint('main', __name__)
@@ -61,12 +61,6 @@ def handle_user():
             else:
                 pass 
 
-        if 'registration_date' not in data: 
-            user.registration_date = get_reg_date
-
-        if 'schedule' not in data: 
-            user.registration_date = get_schedule
-
         
         db.session.commit()
         return jsonify({"message": "Profile saved successfully", "user": user.to_dict()})
@@ -87,14 +81,17 @@ def handle_ask():
         return jsonify({"answer": "Error: Question cannot be empty."})
 
     print(f"Received question: {question}")
-    
+    registration_date = "Wednesday, Nov 19, 2025 - 8:30 AM"
+    schedule = "[{'title': 'COMM-163-1544 Forensics - Speech and Debate', 'date_range': '1/26/26 - 5/22/26', 'rooms': ['Bldg/Room: DVC    ', 'Bldg/Room: DVC ONLINE'], 'instructors': [['Villa, Paul', 'Hawkins, Robert'], ['Villa, Paul', 'Hawkins, Robert']]}, {'title': 'COMSC-165-5454 Advanced Programming with C and C++', 'date_range': '1/26/26 - 5/22/26', 'rooms': ['Bldg/Room: DVC    ', 'Bldg/Room: DVC ONLINE'], 'instructors': [['Pentcheva, Caterina'], ['Pentcheva, Caterina']]}, {'title': 'ENGL-C1001-5130 Critical Thinking and Writing', 'date_range': '1/26/26 - 5/22/26', 'rooms': ['Bldg/Room: DVC ONLINE'], 'instructors': [['Goen-Salter, Heidi']]}, {'title': 'MATH-193-2283 Analytic Geometry and Calculus II', 'date_range': '1/26/26 - 5/22/26', 'rooms': ['Bldg/Room: DVC MA 109'], 'instructors': [['Smith, Dan']]}, {'title': 'PHYS-130-1191 Physics for Engineers and Scientists A: Mechanics and Wave Motion', 'date_range': '1/26/26 - 5/22/26', 'rooms': ['Bldg/Room: DVC PS 177', 'Bldg/Room: DVC PS 113', 'Bldg/Room: DVC PS 113'], 'instructors': [['Large, Evan'], ['Large, Evan'], ['Large, Evan']]}]"
     # Fetch user context
     user = User.query.first()
     context_str = ""
     if user:
         context_str = (f"\nStudent Information:\nName: {user.name}\nMajor: {user.major}\n"
                        f"Discipline: {user.discipline}\nExpected Grad: {user.expected_grad_date}\n"
-                       f"Assigned Counselor (for reference): {user.counselor}")
+                       f"Assigned Counselor (for reference): {user.counselor}\n"
+                       f"Registration Date: {registration_date}\n"
+                       f"Schedule: {schedule}")
 
     try:
         client = OpenAI(api_key=DEEPSEEK_API_KEY, base_url=BASE_URL)
