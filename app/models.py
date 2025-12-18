@@ -22,8 +22,8 @@ class User(db.Model):
             'major': self.major,
             'discipline': self.discipline,
             'expected_grad_date': self.expected_grad_date,
-            'counselor': self.counselor
-            #'registration+_date': self.registration_date,
-            #'schedule': self.schedule
+            'counselor': self.counselor,
+            'registration_date': self.registration_date,
+            'schedule': self.schedule
         }
 
